@@ -11,18 +11,18 @@ const endpointLike = async (
 ) => {
   try {
     if (req.method === "PUT") {
-      const { id } = req.query;
-      const publicacao = await PublicacaoModel.findById(id);
+      const { userId, id } = req.query;
 
-      if (!publicacao) {
-        return res.status(400).json({ erro: "Publicação não encontrada" });
-      }
-
-      const { userId } = req.query;
       const usuario = await UsuarioModel.findById(userId);
 
       if (!usuario) {
         return res.status(400).json({ erro: "Usuário não encontrado" });
+      }
+
+      const publicacao = await PublicacaoModel.findById(id);
+
+      if (!publicacao) {
+        return res.status(400).json({ erro: "Publicação não encontrada" });
       }
 
       const indexDoUsuarioNoLike = publicacao.likes.findIndex(
