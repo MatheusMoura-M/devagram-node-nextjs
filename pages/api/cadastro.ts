@@ -1,4 +1,5 @@
 import { conectarMongoDB } from "@/middlewares/conectarMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import { UsuarioModel } from "@/models/usuarioModel";
 import { upload, uploadImageCosmic } from "@/services/uploadImagemCosmic";
 import { TCadastroRequisicao } from "@/types/cadastroRequisicao";
@@ -64,4 +65,4 @@ export const config = {
   },
 };
 
-export default conectarMongoDB(handler);
+export default politicaCORS(conectarMongoDB(handler));

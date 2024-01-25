@@ -1,4 +1,5 @@
 import { conectarMongoDB } from "@/middlewares/conectarMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import { validarTokenJWT } from "@/middlewares/validarTokenJWT";
 import { PublicacaoModel } from "@/models/publicacaoModel";
 import { UsuarioModel } from "@/models/usuarioModel";
@@ -54,4 +55,6 @@ const endpointComentario = async (
   }
 };
 
-export default validarTokenJWT(conectarMongoDB(endpointComentario));
+export default politicaCORS(
+  validarTokenJWT(conectarMongoDB(endpointComentario))
+);

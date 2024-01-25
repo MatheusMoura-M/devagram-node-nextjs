@@ -1,4 +1,5 @@
 import { conectarMongoDB } from "@/middlewares/conectarMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import { UsuarioModel } from "@/models/usuarioModel";
 import { TLoginResponse } from "@/types/loginResponse";
 import { TRespostaPadrao } from "@/types/respostaPadrao";
@@ -38,4 +39,4 @@ const endpointLogin = async (
   }
 };
 
-export default conectarMongoDB(endpointLogin);
+export default politicaCORS(conectarMongoDB(endpointLogin));

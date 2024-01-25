@@ -1,4 +1,5 @@
 import { conectarMongoDB } from "@/middlewares/conectarMongoDB";
+import { politicaCORS } from "@/middlewares/politicaCORS";
 import { validarTokenJWT } from "@/middlewares/validarTokenJWT";
 import { UsuarioModel } from "@/models/usuarioModel";
 import { upload, uploadImageCosmic } from "@/services/uploadImagemCosmic";
@@ -73,4 +74,4 @@ export const config = {
   },
 };
 
-export default validarTokenJWT(conectarMongoDB(handler));
+export default politicaCORS(validarTokenJWT(conectarMongoDB(handler)));
