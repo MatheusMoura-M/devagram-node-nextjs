@@ -32,9 +32,8 @@ const endpointFeed = async (
     return res.status(405).json({ erro: "Metódo informado não é válido" });
   } catch (e) {
     console.error(e);
+    return res.status(500).json({ erro: "Não foi possível obter o feed" });
   }
-
-  return res.status(400).json({ erro: "Não foi possível obter o feed" });
 };
 
 export default validarTokenJWT(conectarMongoDB(endpointFeed));
