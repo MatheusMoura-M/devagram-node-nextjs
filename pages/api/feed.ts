@@ -1,6 +1,7 @@
 import { conectarMongoDB } from "@/middlewares/conectarMongoDB";
 import { validarTokenJWT } from "@/middlewares/validarTokenJWT";
 import { PublicacaoModel } from "@/models/publicacaoModel";
+import { SeguidorModel } from "@/models/seguidorModel";
 import { UsuarioModel } from "@/models/usuarioModel";
 import { TRespostaPadrao } from "@/types/respostaPadrao";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -24,9 +25,46 @@ const endpointFeed = async (
         }).sort({ data: -1 });
 
         return res.status(200).json(publicacoes);
-      }
+      } else {
+        const { userId } = req?.query;
+        const usuarioLogado = await UsuarioModel.findById(userId);
 
-      return res.status(400).json({ erro: "Id do usuário não foi informado" });
+        if (!usuarioLogado) {
+          res.status(400).json({ erro: "Usuário não encontrado" });
+        }
+
+        const seguidores = await SeguidorModel.find({
+          usuarioId: usuarioLogado._id,
+        });
+
+        const seguidoresIds = seguidores.map((s) => s.usuarioSeguidoId);
+
+        const publicacoes = await PublicacaoModel.find({
+          $or: [{ idUsuario: usuarioLogado._id }, { idUsuario: seguidoresIds }],
+        }).sort({ data: -1 });
+
+        const result = [];
+
+        for (const publicacao of publicacoes) {
+          const usuarioDaPublicacao = await UsuarioModel.findById(
+            publicacao.idUsuario
+          );
+
+          if (usuarioDaPublicacao) {
+            const final = {
+              ...publicacao._doc,
+              usuario: {
+                nome: usuarioDaPublicacao.nome,
+                avatar: usuarioDaPublicacao.avatar,
+              },
+            };
+
+            result.push(final);
+          }
+        }
+
+        return res.status(200).json(result);
+      }
     }
 
     return res.status(405).json({ erro: "Metódo informado não é válido" });
